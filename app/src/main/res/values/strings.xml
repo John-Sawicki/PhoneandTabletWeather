@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Phone and Tablet Weather</string>
+    <string name="hello_everyone">Hello Everyone!</string>
 </resources>
