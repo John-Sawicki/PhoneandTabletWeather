@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("city name", formattedString[0]+" onPostExecute");
             //for(int i = 0; i<formattedString.length; i++){
             //     Log.d(i+" ",formattedString[i] );   }
-            // mListFragment.updateList(formattedString);
-            // mLocationFragment.updateLocation(formattedString);
+            mListFragment.updateList(formattedString);
+            mLocationFragment.updateLocation(formattedString);
             mDetailFragment.updateDetail(formattedString);   //detail activity for phone vert updated, but fragment size set to 0
 
         }

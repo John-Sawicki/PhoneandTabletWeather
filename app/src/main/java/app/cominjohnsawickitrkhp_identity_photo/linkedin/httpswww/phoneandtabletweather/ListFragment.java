@@ -3,6 +3,7 @@ package app.cominjohnsawickitrkhp_identity_photo.linkedin.httpswww.phoneandtable
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,8 @@ public class ListFragment extends Fragment {
     public ListFragment(){}
     TextView mTextView;
     public ArrayAdapter<String> mArrayAdapter;
-    String[] weather;
+    String[] weather, formattedString;
+    String todayForecast;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,16 @@ public class ListFragment extends Fragment {
     }
 
     public void updateList(String[] formattedString){
-
+        this.formattedString = formattedString;
+        //location.setText(formattedString[0]);
+        if(formattedString!=null){
+            mArrayAdapter.clear();
+            Log.d("clear array", "clear array");
+            for(int i = 6;i<11;i++){        //copy updated dated from async to the weather string
+                Log.d(i+" i ",formattedString[i]);
+                todayForecast = formattedString[i];
+                mArrayAdapter.add(todayForecast);
+            }
+        }
     }
 }

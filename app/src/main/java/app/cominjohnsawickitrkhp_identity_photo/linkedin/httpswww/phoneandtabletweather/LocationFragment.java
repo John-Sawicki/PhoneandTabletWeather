@@ -28,10 +28,11 @@ public class LocationFragment extends Fragment {
         time.setText(userTime);
         return view;
     }
-    /*
+
     public void updateLocation(String[] formattedString){
         location.setText(formattedString[0]);
     }
+    /*
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("userTime",userTime );
