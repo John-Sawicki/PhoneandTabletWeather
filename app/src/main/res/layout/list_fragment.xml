@@ -3,19 +3,6 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" phone vertical list fragment"
-        android:id="@+id/detail_update"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:text="Name"
-        android:ems="10"
-        android:hint="Zip Code"
-        android:id="@+id/enterZip" />
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -30,4 +17,5 @@
             android:id="@+id/empty"
             android:visibility="gone"/>
     </FrameLayout>
+
 </LinearLayout>

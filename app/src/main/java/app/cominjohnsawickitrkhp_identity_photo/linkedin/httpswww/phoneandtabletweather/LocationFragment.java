@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class LocationFragment extends Fragment {
     TextView time, location;
-    String userTime="";
+    String userTime=" ";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class LocationFragment extends Fragment {
         time.setText(userTime);
         return view;
     }
+    /*
     public void updateLocation(String[] formattedString){
         location.setText(formattedString[0]);
     }
@@ -41,5 +42,5 @@ public class LocationFragment extends Fragment {
         time.setText(savedInstanceState.getString("userTime"));
         super.onViewStateRestored(savedInstanceState);
     }
-
+*/
 }

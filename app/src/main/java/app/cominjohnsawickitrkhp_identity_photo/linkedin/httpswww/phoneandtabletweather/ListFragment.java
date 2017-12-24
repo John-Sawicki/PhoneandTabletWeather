@@ -36,7 +36,7 @@ public class ListFragment extends Fragment {
                 "Fri - Foggy - 70/46",
                 "Sat - Sunny 76-68"};
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(weather));
-        mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.weather_listview,R.id.weather_text_view);
+        mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.weather_listview, weekForecast);
         ListView listView = (ListView)view.findViewById(R.id.arrayView);
         View emptyView = view.findViewById(R.id.empty);
         listView.setEmptyView(emptyView);
