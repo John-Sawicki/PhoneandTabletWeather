@@ -21,6 +21,7 @@ public class ListFragment extends Fragment {
     public ArrayAdapter<String> mArrayAdapter;
     String[] weather, formattedString;
     String todayForecast;
+    ListView listView;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +34,13 @@ public class ListFragment extends Fragment {
         weather = new String[] {
                 "Today - Sunny - 88/63",
                 "Tomorrow - Foggy - 70/46",
-                "Weds - Cloudy 72-63",
-                "Thurs - Rainy 64-51",
+                "Weds - Cloudy - 72/63",
+                "Thurs - Rainy - 64-51",
                 "Fri - Foggy - 70/46",
-                "Sat - Sunny 76-68"};
+                "Sat - Sunny 76/68"};
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(weather));
         mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.weather_listview, weekForecast);
-        ListView listView = (ListView)view.findViewById(R.id.arrayView);
+         listView = (ListView)view.findViewById(R.id.arrayView);
         View emptyView = view.findViewById(R.id.empty);
         listView.setEmptyView(emptyView);
         listView.setAdapter(mArrayAdapter);

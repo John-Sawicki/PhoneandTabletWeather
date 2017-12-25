@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,11 +29,13 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager mFragmentManager;
     Button updateButton;
     String url, zipCode ="77020", units="imperial";
+    LinearLayout background;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("start", "start");
+        background =(LinearLayout)findViewById(R.id.background);
         mFragmentManager = getFragmentManager();
         mFragmentManager.beginTransaction().add(R.id.location_time_fragment, mLocationFragment).commit();
         mFragmentManager.beginTransaction().add(R.id.list_fragment, mListFragment).commit();
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray weatherArray = dayInfo.getJSONArray("weather");
                     JSONObject weatherInfo = weatherArray.getJSONObject(0);
                     main = weatherInfo.getString("main");
-                    icon = ""+weatherInfo.getInt("icon");
+                    icon = weatherInfo.getString("icon");
                     description = weatherInfo.getString("description");
                     composite =dayOfWeek+" - "+main+" - "+ Math.round(Double.parseDouble(max))+"/"+ Math.round(Double.parseDouble(min)) ;
                     if(i==0){//save values for detail activity
@@ -105,11 +108,24 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String[] strings) {
             super.onPostExecute(strings);
             Log.d("city name", formattedString[0]+" onPostExecute");
-            //for(int i = 0; i<formattedString.length; i++){
-            //     Log.d(i+" ",formattedString[i] );   }
-            mListFragment.updateList(formattedString);
-            mLocationFragment.updateLocation(formattedString);
-            mDetailFragment.updateDetail(formattedString);   //detail activity for phone vert updated, but fragment size set to 0
+            for(int i = 0; i<formattedString.length; i++){
+                 Log.d(i+" ",formattedString[i] );
+            }
+           mListFragment.updateList(formattedString);
+           mLocationFragment.updateLocation(formattedString);
+           mDetailFragment.updateDetail(formattedString);   //detail activity for phone vert updated, but fragment size set to 0
+            double highTemp = Double.parseDouble(formattedString[2]);
+            int intHighTemp = (int)highTemp;
+            Log.d(" in temp", ""+intHighTemp);
+
+            if(intHighTemp<34)   //TODO change font to white
+                background.setBackgroundColor(0x1565C0);
+            else if(intHighTemp<60)
+                background.setBackgroundColor(0xBBDEFB);
+            else if(intHighTemp<80)
+                background.setBackgroundColor(0xFFCDD2);
+            else
+                background.setBackgroundColor(0xF44336);    //TODO change font to white
 
         }
     }
