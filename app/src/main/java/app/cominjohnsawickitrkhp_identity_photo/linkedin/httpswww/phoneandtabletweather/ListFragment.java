@@ -54,7 +54,7 @@ public class ListFragment extends Fragment {
             mArrayAdapter.clear();
             Log.d("clear array", "clear array");
             for(int i = 6;i<11;i++){        //copy updated dated from async to the weather string
-                Log.d(i+" i ",formattedString[i]);
+                //Log.d(i+" i ",formattedString[i]);
                 todayForecast = formattedString[i];
                 mArrayAdapter.add(todayForecast);
             }

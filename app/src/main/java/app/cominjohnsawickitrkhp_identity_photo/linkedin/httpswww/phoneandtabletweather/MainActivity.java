@@ -1,7 +1,9 @@
 package app.cominjohnsawickitrkhp_identity_photo.linkedin.httpswww.phoneandtabletweather;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,17 +32,25 @@ public class MainActivity extends AppCompatActivity {
     Button updateButton;
     String url, zipCode ="77020", units="imperial";
     LinearLayout background;
+    public String[] formattedString = new String[11];   //index 0-4 for detail and index 5-9 for list
+    SharedPreferences settings;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = settings.edit();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("start", "start");
         background =(LinearLayout)findViewById(R.id.background);
         mFragmentManager = getFragmentManager();
-        mFragmentManager.beginTransaction().add(R.id.location_time_fragment, mLocationFragment).commit();
-        mFragmentManager.beginTransaction().add(R.id.list_fragment, mListFragment).commit();
-        mFragmentManager.beginTransaction().add(R.id.detail_fragment, mDetailFragment).commit();
-        setContentView(R.layout.activity_main);
+        if(formattedString[0]==null) {  //only add the fragments the first time. after data is refreshed
+            Log.d("added  fragments", "index 0 is null");
+            mFragmentManager.beginTransaction().add(R.id.location_time_fragment, mLocationFragment).commit();
+            mFragmentManager.beginTransaction().add(R.id.list_fragment, mListFragment).commit();
+            mFragmentManager.beginTransaction().add(R.id.detail_fragment, mDetailFragment).commit();
+            setContentView(R.layout.activity_main);
+        }
         url ="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+zipCode+",us&units="+units+"&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
         url= "http://api.openweathermap.org/data/2.5/forecast/daily?zip=77020,us&units=imperial&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
     }
@@ -59,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
     class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
-        public String[] formattedString = new String[11];   //index 0-4 for detail and index 5-9 for list
+        //
         @Override
         protected String[] doInBackground(String... strings) {
             String backGroundURL = strings[0];
@@ -67,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 URL theURL = new URL(backGroundURL);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(theURL.openConnection().getInputStream(), "UTF-8"));
                 String jsonString = reader.readLine();
-                Log.d("raw json", jsonString);
+                //Log.d("raw json", jsonString);
                 JSONObject weather = new JSONObject(jsonString);
                 JSONObject city = weather.getJSONObject("city");
                 formattedString[0]=city.getString("name");
-                Log.d("city name", formattedString[0]);//Houston
+                Log.d("city name index 0", formattedString[0]);//Houston
                 JSONArray days = weather.getJSONArray("list");
                 Date date = new Date();
                 String dayOfWeek, main, max, min, composite, icon, description;
@@ -107,17 +117,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String[] strings) {
             super.onPostExecute(strings);
-            Log.d("city name", formattedString[0]+" onPostExecute");
-            for(int i = 0; i<formattedString.length; i++){
-                 Log.d(i+" ",formattedString[i] );
-            }
+            //Log.d("city name", formattedString[0]+" onPostExecute");
            mListFragment.updateList(formattedString);
            mLocationFragment.updateLocation(formattedString);
            mDetailFragment.updateDetail(formattedString);   //detail activity for phone vert updated, but fragment size set to 0
             double highTemp = Double.parseDouble(formattedString[2]);
             int intHighTemp = (int)highTemp;
-            Log.d(" in temp", ""+intHighTemp);
-
             if(intHighTemp<34)   //TODO change font to white
                 background.setBackgroundColor(0x1565C0);
             else if(intHighTemp<60)
@@ -126,7 +131,35 @@ public class MainActivity extends AppCompatActivity {
                 background.setBackgroundColor(0xFFCDD2);
             else
                 background.setBackgroundColor(0xF44336);    //TODO change font to white
+        }
+    }
 
+    @Override
+    protected void onPause() {  //save formatted string before the rotation
+        super.onPause();
+        Log.d("onPause", "onPause" );
+        if(formattedString[0]!=null) {
+            Log.d("test for null", "index 0 is not null");
+        }
+        for(int i =0; i<formattedString.length; i++){
+            editor.putString("saved 6", formattedString[6]); // here string is the value you want to save
+        }
+        editor.commit();
+    }
+
+    @Override
+    protected void onResume() {//clear arrayList and add values from formattedString
+        super.onResume();
+        //update if values are not null. when the program is first started array is empty and listFragment values are used
+        Log.d("onResume", "onResume" );
+        Log.d("resume value 6", settings.getString("saved 6", "no shared pref"));
+        formattedString[6]=settings.getString("saved 6", "no shared pref");
+        Log.d("formatted string 6",  formattedString[6]);
+        if(formattedString[0]!=null){
+            Log.d("test for null", "index 0 is not null" );
+            mListFragment.updateList(formattedString);
+            mLocationFragment.updateLocation(formattedString);
+            mDetailFragment.updateDetail(formattedString);
         }
     }
 }
