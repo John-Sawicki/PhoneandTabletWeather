@@ -33,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
     String url, zipCode ="77020", units="imperial";
     LinearLayout background;
     public String[] formattedString = new String[11];   //index 0-4 for detail and index 5-9 for list
-    SharedPreferences settings;
-    SharedPreferences.Editor editor;
+    public SharedPreferences settings;
+    public SharedPreferences.Editor editor;
+    SaveValues mSaveValues;
+    public boolean refreshed = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -44,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("start", "start");
         background =(LinearLayout)findViewById(R.id.background);
         mFragmentManager = getFragmentManager();
-        if(formattedString[0]==null) {  //only add the fragments the first time. after data is refreshed
-            Log.d("added  fragments", "index 0 is null");
+        if(!refreshed) {  //only add the fragments the first time. after data is refreshed
+            Log.d("added  fragments", "onCreate");
             mFragmentManager.beginTransaction().add(R.id.location_time_fragment, mLocationFragment).commit();
             mFragmentManager.beginTransaction().add(R.id.list_fragment, mListFragment).commit();
             mFragmentManager.beginTransaction().add(R.id.detail_fragment, mDetailFragment).commit();
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String[] doInBackground(String... strings) {
             String backGroundURL = strings[0];
+            refreshed= true;    //use formatted value strings
             try {
                 URL theURL = new URL(backGroundURL);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(theURL.openConnection().getInputStream(), "UTF-8"));
@@ -138,25 +141,47 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {  //save formatted string before the rotation
         super.onPause();
         Log.d("onPause", "onPause" );
-        if(formattedString[0]!=null) {
-            Log.d("test for null", "index 0 is not null");
+        if(refreshed) {
+            //mSaveValues.saveFormattedStrings(formattedString);  //saves values in shared pref
+            editor.putString("saved 0", formattedString[0]); // here string is the value you want to save
+            editor.putString("saved 1", formattedString[1]);
+            editor.putString("saved 2", formattedString[2]);
+            editor.putString("saved 3", formattedString[3]);
+            editor.putString("saved 4", formattedString[4]);
+            editor.putString("saved 5", formattedString[5]);
+            editor.putString("saved 6", formattedString[6]);
+            editor.putString("saved 7", formattedString[7]);
+            editor.putString("saved 8", formattedString[8]);
+            editor.putString("saved 9", formattedString[9]);
+            editor.putString("saved 10", formattedString[10]);
+            editor.putBoolean("refreshed",refreshed);
+            editor.commit();
+            Log.d("onPause index 0", settings.getString("saved 0", "Houston"));
         }
-        for(int i =0; i<formattedString.length; i++){
-            editor.putString("saved 6", formattedString[6]); // here string is the value you want to save
-        }
-        editor.commit();
     }
-
     @Override
     protected void onResume() {//clear arrayList and add values from formattedString
         super.onResume();
         //update if values are not null. when the program is first started array is empty and listFragment values are used
         Log.d("onResume", "onResume" );
-        Log.d("resume value 6", settings.getString("saved 6", "no shared pref"));
-        formattedString[6]=settings.getString("saved 6", "no shared pref");
-        Log.d("formatted string 6",  formattedString[6]);
-        if(formattedString[0]!=null){
-            Log.d("test for null", "index 0 is not null" );
+        //Log.d("resume value 6", settings.getString("saved 6", "no shared pref"));
+        //formattedString[6]=settings.getString("saved 6", "no shared pref");
+        //Log.d("test for null", "index 0 is not null" );
+        refreshed = settings.getBoolean("refreshed", false);
+        Log.d("refreshed value",""+refreshed );
+        if(refreshed) {//use share pref values if async task is used
+            formattedString[0]=settings.getString("saved 0", "Houston");
+            formattedString[1]=settings.getString("saved 1", "Today");
+            formattedString[2]=settings.getString("saved 2", "70");
+            formattedString[3]=settings.getString("saved 3", "50");
+            formattedString[4]=settings.getString("saved 4", "main");
+            formattedString[5]=settings.getString("saved 5", "icon");
+            formattedString[6]=settings.getString("saved 6", "Today - Sunny - 88/63");
+            formattedString[7]=settings.getString("saved 7", "Tomorrow - Foggy - 70/46");
+            formattedString[8]=settings.getString("saved 8", "Weds - Cloudy - 72/63");
+            formattedString[9]=settings.getString("saved 9", "Weds - Cloudy - 72/63");
+            formattedString[10]=settings.getString("saved 10", "Fri - Foggy - 70/46");
+            Log.d("formatted string 6",  formattedString[6]);
             mListFragment.updateList(formattedString);
             mLocationFragment.updateLocation(formattedString);
             mDetailFragment.updateDetail(formattedString);
